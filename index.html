@@ -5,13 +5,1129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COCO₂ | Smart Motorcycle Emission Filter</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CSS STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #4CAF50;
+            --light-green: #E8F5E9;
+            --dark-green: #2E7D32;
+            --cream: #FFF8E1;
+            --brown: #8D6E63;
+            --light-brown: #D7CCC8;
+            --dark-brown: #5D4037;
+            --white: #FFFFFF;
+            --gray: #757575;
+            --light-gray: #FAFAFA;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--light-green) 0%, var(--cream) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-content {
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .coconut-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin: 0 auto 40px;
+        }
+
+        .coconut {
+            position: absolute;
+            left: 50px;
+            top: 50px;
+            animation: roll 3s ease-in-out infinite;
+            transform-origin: center center;
+        }
+
+        @keyframes roll {
+            0%, 100% {
+                transform: translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateX(75px) rotate(90deg);
+            }
+            50% {
+                transform: translateX(150px) rotate(180deg);
+            }
+            75% {
+                transform: translateX(75px) rotate(270deg);
+            }
+        }
+
+        .coconut-body {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--brown) 0%, var(--dark-brown) 100%);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(93, 64, 55, 0.3);
+        }
+
+        .coconut-body::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: linear-gradient(45deg, var(--light-brown) 0%, var(--brown) 100%);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .coconut-face {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 30px;
+        }
+
+        .coconut-eye {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: var(--dark-brown);
+            border-radius: 50%;
+            top: 5px;
+        }
+
+        .left-eye {
+            left: 8px;
+            animation: blink 2s infinite;
+        }
+
+        .right-eye {
+            right: 8px;
+            animation: blink 2s infinite 0.2s;
+        }
+
+        @keyframes blink {
+            0%, 45%, 55%, 100% { height: 12px; }
+            50% { height: 2px; }
+        }
+
+        .coconut-mouth {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 8px;
+            background: var(--dark-brown);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .coconut-stem {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 20px;
+            background: var(--dark-brown);
+            border-radius: 2px;
+        }
+
+        .coconut-shadow {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            animation: shadowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes shadowPulse {
+            0%, 100% { 
+                width: 60px;
+                opacity: 0.3;
+            }
+            50% { 
+                width: 80px;
+                opacity: 0.1;
+            }
+        }
+
+        .rolling-track {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--brown);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .track-line {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--light-green), transparent);
+            animation: trackMove 3s linear infinite;
+        }
+
+        @keyframes trackMove {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .loading-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 10px;
+        }
+
+        .co2 {
+            font-size: 2.5rem;
+            vertical-align: super;
+            color: var(--brown);
+        }
+
+        .loading-subtext {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: var(--light-brown);
+            border-radius: 2px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-green), var(--dark-green));
+            animation: loading 2.5s ease-in-out forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark-green);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .logo-icon i {
+            font-size: 2rem;
+            color: var(--primary-green);
+        }
+
+        .co2-small {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            font-size: 1rem;
+            color: var(--brown);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--dark-green);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-green);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--primary-green);
+            color: var(--white) !important;
+            padding: 8px 20px !important;
+            border-radius: 25px;
+            margin-left: 10px;
+        }
+
+        .nav-cta:hover {
+            background: var(--dark-green);
+        }
+
+        .nav-cta::after {
+            display: none;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--dark-green);
+            cursor: pointer;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            padding: 150px 0 80px;
+            background: linear-gradient(135deg, var(--light-green) 0%, var(--cream) 100%);
+        }
+
+        .hero .container {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .hero-badge i {
+            margin-right: 8px;
+        }
+
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            border: 2px solid var(--primary-green);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .hero-image {
+            flex: 1;
+        }
+
+        .device-mockup {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .device-mockup img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .mockup-badge {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            color: var(--dark-green);
+        }
+
+        .mockup-badge i {
+            margin-right: 8px;
+            color: var(--primary-green);
+        }
+
+        /* ===== SECTIONS COMMON ===== */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .process-step {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateY(-10px);
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .step-icon i {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--brown);
+            color: var(--white);
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .process-step h3 {
+            font-size: 1.5rem;
+            color: var(--dark-green);
+            margin-bottom: 15px;
+        }
+
+        /* ===== TECHNOLOGY SECTION ===== */
+        .technology {
+            background: var(--light-gray);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .tech-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .tech-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tech-icon i {
+            font-size: 2rem;
+            color: var(--dark-green);
+        }
+
+        .tech-card h3 {
+            font-size: 1.5rem;
+            color: var(--dark-green);
+            margin-bottom: 15px;
+        }
+
+        .tech-features {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .tech-features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .tech-features i {
+            color: var(--primary-green);
+            margin-right: 10px;
+        }
+
+        /* ===== GALLERY SECTION ===== */
+        .gallery {
+            background: var(--cream);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 300px;
+        }
+
+        .gallery-img-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .gallery-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: var(--white);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+
+        .gallery-overlay p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* ===== IMPACT SECTION ===== */
+        .impact {
+            background: var(--white);
+        }
+
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .impact-stat {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--light-green);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 5px solid var(--primary-green);
+        }
+
+        .stat-circle span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+
+        .stat-unit {
+            font-size: 1rem !important;
+            color: var(--gray) !important;
+            margin-top: 5px;
+        }
+
+        .impact-stat h4 {
+            font-size: 1.2rem;
+            color: var(--dark-green);
+            margin-bottom: 10px;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .user-card {
+            background: var(--light-gray);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .user-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--light-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .user-icon i {
+            font-size: 1.8rem;
+            color: var(--primary-green);
+        }
+
+        .user-card h4 {
+            font-size: 1.3rem;
+            color: var(--dark-green);
+            margin-bottom: 10px;
+        }
+
+        /* ===== PRICING SECTION ===== */
+        .pricing {
+            background: var(--light-gray);
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card.featured {
+            border: 3px solid var(--primary-green);
+            transform: scale(1.05);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pricing-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark-green);
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--dark-green);
+            margin-bottom: 10px;
+        }
+
+        .price .currency {
+            font-size: 1.5rem;
+            vertical-align: top;
+        }
+
+        .price .amount {
+            font-size: 3.5rem;
+            font-weight: 700;
+        }
+
+        .price .period {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+
+        .price-note {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-features i {
+            color: var(--primary-green);
+            margin-right: 10px;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--primary-green) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group .btn {
+            white-space: nowrap;
+        }
+
+        .form-note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--dark-brown);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--cream);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 15px;
+        }
+
+        .footer-col a {
+            color: var(--light-brown);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--white);
+        }
+
+        .footer-col i {
+            margin-right: 10px;
+            color: var(--primary-green);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-green);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--light-brown);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 992px) {
+            .hero .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-image {
+                order: -1;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+            }
+
+            .loading-text {
+                font-size: 2.5rem;
+            }
+
+            .coconut-container {
+                width: 250px;
+                height: 150px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Loading Screen -->
+    <!-- ===== LOADING SCREEN ===== -->
     <div id="loadingScreen" class="loading-screen">
         <div class="loading-content">
             <div class="coconut-container">
@@ -38,9 +1154,9 @@
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- ===== MAIN CONTENT ===== -->
     <div id="mainContent" class="main-content hidden">
-        <!-- Header & Navigation -->
+        <!-- Header -->
         <header>
             <div class="container header-container">
                 <a href="#home" class="logo">
@@ -174,198 +1290,4 @@
                     </div>
                     
                     <div class="tech-card">
-                        <div class="tech-icon" style="background-color: #fff3e0;">
-                            <i class="fas fa-microchip"></i>
-                        </div>
-                        <h3>Smart Sensors</h3>
-                        <p>Low-cost vibration and temperature sensors detect riding patterns and filter efficiency in real-time.</p>
-                        <ul class="tech-features">
-                            <li><i class="fas fa-check"></i> Real-time emission monitoring</li>
-                            <li><i class="fas fa-check"></i> Prolonged idling detection</li>
-                            <li><i class="fas fa-check"></i> Low power consumption</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="tech-card">
-                        <div class="tech-icon" style="background-color: #e3f2fd;">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h3>AI-Powered App</h3>
-                        <p>Our mobile app analyzes sensor data to provide personalized feedback for cleaner riding habits.</p>
-                        <ul class="tech-features">
-                            <li><i class="fas fa-check"></i> Real-time riding feedback</li>
-                            <li><i class="fas fa-check"></i> Emission reduction tracking</li>
-                            <li><i class="fas fa-check"></i> Filter replacement alerts</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Gallery Section -->
-        <section id="gallery" class="gallery">
-            <div class="container">
-                <div class="section-title">
-                    <h2>See COCO₂ in Action</h2>
-                    <p>Visualizing our impact on urban mobility and air quality</p>
-                </div>
-                
-                <div class="gallery-grid">
-                    <div class="gallery-item">
-                        <div class="gallery-img-container">
-                            <img src="https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Coconut Biochar Production">
-                            <div class="gallery-overlay">
-                                <h3>Sustainable Materials</h3>
-                                <p>Coconut shells, typically agricultural waste, are transformed into high-efficiency biochar filters through pyrolysis.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item">
-                        <div class="gallery-img-container">
-                            <img src="https://images.unsplash.com/photo-1558980664-10e7170b5df9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Filter Installation">
-                            <div class="gallery-overlay">
-                                <h3>Easy Installation</h3>
-                                <p>Simple snap-on design requires no mechanical expertise. Fits most motorcycle models in under 2 minutes.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item">
-                        <div class="gallery-img-container">
-                            <img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mobile App Interface">
-                            <div class="gallery-overlay">
-                                <h3>Smart Monitoring</h3>
-                                <p>Real-time dashboard showing emission reductions, fuel savings, and riding efficiency metrics.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item">
-                        <div class="gallery-img-container">
-                            <img src="https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Urban Impact">
-                            <div class="gallery-overlay">
-                                <h3>Cleaner Cities</h3>
-                                <p>Reducing motorcycle emissions in dense urban areas where air quality matters most.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item">
-                        <div class="gallery-img-container">
-                            <img src="https://images.unsplash.com/photo-1560769629-975ec94e6a86?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Delivery Fleets">
-                            <div class="gallery-overlay">
-                                <h3>Fleet Solutions</h3>
-                                <p>Scalable solutions for delivery services and ride-hailing companies seeking affordable sustainability.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item">
-                        <div class="gallery-img-container">
-                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Manufacturing Process">
-                            <div class="gallery-overlay">
-                                <h3>Scalable Production</h3>
-                                <p>Using agricultural waste streams to create affordable filters at scale, supporting circular economies.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Impact Section -->
-        <section id="impact" class="impact">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Measurable Impact</h2>
-                    <p>Creating cleaner air and healthier communities</p>
-                </div>
-                
-                <div class="impact-stats">
-                    <div class="impact-stat">
-                        <div class="stat-circle">
-                            <span>40%</span>
-                        </div>
-                        <h4>Reduction in CO₂ Emissions</h4>
-                        <p>Per motorcycle with COCO₂ installed</p>
-                    </div>
-                    
-                    <div class="impact-stat">
-                        <div class="stat-circle">
-                            <span>15%</span>
-                        </div>
-                        <h4>Fuel Savings</h4>
-                        <p>Through efficient riding feedback</p>
-                    </div>
-                    
-                    <div class="impact-stat">
-                        <div class="stat-circle">
-                            <span>50K+</span>
-                        </div>
-                        <h4>Potential Users</h4>
-                        <p>In target urban markets</p>
-                    </div>
-                    
-                    <div class="impact-stat">
-                        <div class="stat-circle">
-                            <span>2,000</span>
-                            <span class="stat-unit">tons</span>
-                        </div>
-                        <h4>Annual CO₂ Reduction</h4>
-                        <p>At 10% market penetration</p>
-                    </div>
-                </div>
-                
-                <div class="target-users">
-                    <h3>Who Needs COCO₂?</h3>
-                    <div class="users-grid">
-                        <div class="user-card">
-                            <div class="user-icon">
-                                <i class="fas fa-user-clock"></i>
-                            </div>
-                            <h4>Daily Commuters</h4>
-                            <p>Urban riders seeking affordable ways to reduce their environmental impact</p>
-                        </div>
-                        
-                        <div class="user-card">
-                            <div class="user-icon">
-                                <i class="fas fa-truck"></i>
-                            </div>
-                            <h4>Delivery Fleets</h4>
-                            <p>Food delivery and logistics companies meeting sustainability goals</p>
-                        </div>
-                        
-                        <div class="user-card">
-                            <div class="user-icon">
-                                <i class="fas fa-taxi"></i>
-                            </div>
-                            <h4>Ride-Hailing Services</h4>
-                            <p>Motorcycle taxi services improving air quality in dense cities</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Pricing Section -->
-        <section id="pricing" class="pricing">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Affordable Clean Air</h2>
-                    <p>Choose the plan that fits your needs</p>
-                </div>
-                
-                <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <h3>Individual</h3>
-                            <div class="price">
-                                <span class="currency">$</span>
-                                <span class="amount">29</span>
-                                <span class="period">/filter</span>
-                            </div>
-                            <p class="price-note">Lasts 3-4 months</p>
-                        </div>
-                        <ul class="pricing-features">
-                            <li><i class
+                        <div class="tech-icon" style="
